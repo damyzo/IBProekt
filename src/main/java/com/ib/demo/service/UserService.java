@@ -12,4 +12,6 @@ public interface UserService {
 
     public List<User> getAllByCountry(String country);
 
+    public List<User> getAllByPhone(String phone);
+
 }

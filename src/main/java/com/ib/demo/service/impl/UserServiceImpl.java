@@ -25,4 +25,9 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllByCountry(String country) {
         return userRepository.findAllByCountryContaining(country);
     }
+
+    @Override
+    public List<User> getAllByPhone(String phone) {
+        return userRepository.findAllByPhoneContaining(phone);
+    }
 }

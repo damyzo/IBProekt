@@ -27,8 +27,13 @@ public class ExampleController {
         return ResponseEntity.ok(userService.getAll());
     }
 
-    @GetMapping("/users/{country}")
+    @GetMapping("/users/country/{country}")
     public ResponseEntity<List<User>> allUsersByCountry(@PathVariable String country) {
         return ResponseEntity.ok(userService.getAllByCountry(country));
+    }
+
+    @GetMapping("/users/phone/{phone}")
+    public List<User> allUsersByPhone(@PathVariable String phone) {
+        return userService.getAllByPhone(phone);
     }
 }
