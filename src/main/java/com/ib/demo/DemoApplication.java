@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.crypto.KeyGenerator;
+import java.security.NoSuchAlgorithmException;
+
 @SpringBootApplication
 public class DemoApplication {
 
@@ -16,5 +19,10 @@ public class DemoApplication {
     @Bean
     public PasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public KeyGenerator keyGenerator() throws NoSuchAlgorithmException {
+        return KeyGenerator.getInstance("HMACSHA1");
     }
 }

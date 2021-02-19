@@ -1,10 +1,14 @@
 package com.ib.demo.web.controller;
 
 import com.ib.demo.service.AccountService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class LoginController {
@@ -21,9 +25,13 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String loginAccount(@RequestParam String email, @RequestParam String password) {
-        accountService.login(email, password);
-        return "redirect:/api/test";
+    public ResponseEntity<List<String>> loginAccount(@RequestParam String email, @RequestParam String password) {
+        List<String> list = new ArrayList<>();
+        accountService.login(email, password).ifPresent(account -> {
+            list.add(account.getAccessKeyEncoded());
+            list.add(account.getSecretKeyEncoded());
+        });
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/register")
@@ -32,10 +40,12 @@ public class LoginController {
     }
 
     @PostMapping("/register")
-    public String registerAccount(@RequestParam String email, @RequestParam String password) {
-        if (accountService.register(email, password).isEmpty()) {
-            return "redirect:/register";
-        }
-        return "redirect:/login";
+    public ResponseEntity<List<String>> registerAccount(@RequestParam String email, @RequestParam String password) {
+        List<String> list = new ArrayList<>();
+        accountService.register(email, password).ifPresent(account -> {
+            list.add(account.getAccessKeyEncoded());
+            list.add(account.getSecretKeyEncoded());
+        });
+        return ResponseEntity.ok(list);
     }
 }

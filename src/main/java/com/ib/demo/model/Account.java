@@ -1,7 +1,9 @@
 package com.ib.demo.model;
 
 import lombok.Data;
+import org.apache.tomcat.util.codec.binary.Base64;
 
+import javax.crypto.SecretKey;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -14,11 +16,25 @@ public class Account {
 
     private String password;
 
+    private String accessKey;
+
+    private SecretKey secretKey;
+
     public Account() {
     }
 
-    public Account(String email, String password) {
+    public Account(String email, String password, SecretKey accessKey, SecretKey secretKey) {
         this.email = email;
         this.password = password;
+        this.accessKey = Base64.encodeBase64String(accessKey.getEncoded());
+        this.secretKey = secretKey;
+    }
+
+    public String getSecretKeyEncoded() {
+        return Base64.encodeBase64String(secretKey.getEncoded());
+    }
+
+    public String getAccessKeyEncoded() {
+        return accessKey;
     }
 }

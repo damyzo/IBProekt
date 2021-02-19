@@ -10,5 +10,5 @@ public interface AccountService {
 
     Optional<Account> register(String email, String password);
     Optional<Account> login(String email, String password);
-
+    Optional<Account> findByAccessKey(String accessKey);
 }
