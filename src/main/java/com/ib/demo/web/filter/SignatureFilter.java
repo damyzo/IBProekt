@@ -1,6 +1,7 @@
 package com.ib.demo.web.filter;
 
 import com.ib.demo.model.Account;
+import com.ib.demo.model.Role;
 import com.ib.demo.service.AccountService;
 import com.ib.demo.service.UtilsService;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,8 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -26,19 +29,13 @@ public class SignatureFilter implements Filter {
         this.accountService = accountService;
     }
 
-    public String computeStringToSign() {
-        String CanonicalizedResource = "[ \"/\" + Bucket ] +\n" +
-                "\t<HTTP-Request-URI, from the protocol name up to the query string> +\n" +
-                "\t[ subresource, if present. For example \"?acl\", \"?location\", \"?logging\", or \"?torrent\"];\n";
-
-        String CanonicalizedAmzHeaders = "<described below>";
-
-        return "HTTP-Verb" + "\n" +
-                "Content-MD5" + "\n" +
-                "Content-Type" + "\n" +
-                "Date" + "\n" +
-                CanonicalizedAmzHeaders +
-                CanonicalizedResource;
+    public String computeStringToSign(String httpVerb, String contentType, String date) {
+        return httpVerb + "\n" +
+                "" + "\n" +
+                contentType + "\n" +
+                date + "\n" +
+                "" +
+                "";
     }
 
     @Override
@@ -68,10 +65,28 @@ public class SignatureFilter implements Filter {
                 if (account.isEmpty()) {
                     response.sendRedirect("/login");
                 } else {
-                    if (utilsService.signature(account.get().getSecretKey(), computeStringToSign()).equals(signature)) {
-                        filterChain.doFilter(servletRequest, servletResponse);
-                    } else {
+                    String date = request.getHeader("Date");
+                    if (date == null || date.isEmpty()) {
                         response.sendRedirect("/login");
+                    } else {
+                        LocalDateTime localDateTime = LocalDateTime.parse(date);
+                        if (Duration.between(localDateTime, LocalDateTime.now()).toMinutes() > 15) {
+                            response.sendRedirect("/login");
+                        } else {
+                            String contentType = request.getHeader("Content-Type");
+                            String httpVerb = request.getMethod();
+                            if (account.get().getRole().equals(Role.USER) && (httpVerb.equals("PUT") || httpVerb
+                                    .equals("DELETE"))) {
+                                response.sendRedirect("/login");
+                            } else {
+                                if (utilsService.signature(account.get().getSecretKey(),
+                                        computeStringToSign(httpVerb, contentType, date)).equals(signature)) {
+                                    filterChain.doFilter(servletRequest, servletResponse);
+                                } else {
+                                    response.sendRedirect("/login");
+                                }
+                            }
+                        }
                     }
                 }
             }

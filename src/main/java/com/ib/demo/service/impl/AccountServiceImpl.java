@@ -1,6 +1,7 @@
 package com.ib.demo.service.impl;
 
 import com.ib.demo.model.Account;
+import com.ib.demo.model.Role;
 import com.ib.demo.repository.AccountRepository;
 import com.ib.demo.service.AccountService;
 import com.ib.demo.service.UtilsService;
@@ -31,7 +32,7 @@ public class AccountServiceImpl implements AccountService {
         String encPass = passwordEncoder.encode(password);
         SecretKey accessKey = utilsService.generateAccessKey();
         SecretKey secretKey = utilsService.generateSecretKey();
-        Account account = new Account(email, encPass, accessKey, secretKey);
+        Account account = new Account(email, encPass, accessKey, secretKey, Role.USER);
         accountRepository.save(account);
         return Optional.of(account);
     }
