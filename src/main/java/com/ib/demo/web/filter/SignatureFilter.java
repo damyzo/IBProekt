@@ -48,7 +48,7 @@ public class SignatureFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        if (request.getServletPath().equals("/login") || request.getServletPath().equals("/register")) {
+        if (request.getServletPath().equals("/login") || request.getServletPath().equals("/register") || request.getServletPath().equals("/api/test")) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             String auth = request.getHeader("Authorization");
