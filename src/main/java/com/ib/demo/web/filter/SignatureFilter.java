@@ -63,7 +63,7 @@ public class SignatureFilter implements Filter {
                 Optional<Account> account = accountService.findByAccessKey(accessKey);
 
                 if (account.isEmpty()) {
-                    response.sendRedirect("/login");
+                    response.sendRedirect("/register");
                 } else {
                     String date = request.getHeader("Date");
                     if (date == null || date.isEmpty()) {
