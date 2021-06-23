@@ -9,13 +9,13 @@ import java.util.Optional;
 @Service
 public interface UserService {
 
-    public List<User> getAll();
+    List<User> getAll();
 
-    public List<User> getAllByCountry(String country);
+    List<User> getAllByCountry(String country);
 
-    public List<User> getAllByPhone(String phone);
+    List<User> getAllByPhone(String phone);
 
-    public Optional<User> putNewUser(String name, String email, String phone, String country);
+    Optional<User> putNewUser(String name, String email, String phone, String country);
 
-    public Optional<User> deleteUser(Long id);
+    Optional<User> deleteUser(Long id);
 }
